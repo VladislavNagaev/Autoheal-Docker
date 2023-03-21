@@ -1,0 +1,39 @@
+---
+version: "3.8"
+
+
+services:
+
+  autoheal:
+    image: willfarrell/autoheal:1.2.0
+    container_name: autoheal
+    hostname: autoheal
+    networks: 
+      - main-network
+    environment:
+      # AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: 5
+      AUTOHEAL_START_PERIOD: 0
+      AUTOHEAL_DEFAULT_STOP_TIMEOUT: 15
+      DOCKER_SOCK: /var/run/docker.sock
+      CURL_TIMEOUT: 30
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+    tty: true
+    restart: always
+
+
+networks:
+  main-network:
+    name: main-network
+    external: false
+    driver: bridge
+    attachable: false
